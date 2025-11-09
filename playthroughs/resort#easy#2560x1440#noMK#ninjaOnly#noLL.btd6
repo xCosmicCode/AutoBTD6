@@ -2,8 +2,8 @@ place ninja ninja0 at 1710, 258
 upgrade ninja0 path 0
 upgrade ninja0 path 2
 upgrade ninja0 path 0
-place ninja ninja1 at 1799, 299
-place ninja ninja2 at 90, 256
+place ninja ninja1 at 1796, 261
+place ninja ninja2 at 265, 265
 upgrade ninja0 path 0
 retarget ninja2
 retarget ninja2
@@ -20,3 +20,4 @@ upgrade ninja1 path 0
 upgrade ninja1 path 2
 upgrade ninja1 path 0
 upgrade ninja1 path 0
+
