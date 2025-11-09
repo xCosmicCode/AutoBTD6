@@ -378,13 +378,48 @@ def main():
     elif argv[iArg] == 'achievements':
         pass
     # py replay.py missing [category]
-    # plays all playthroughs with missing medals
-    # if category is not provided from easiest category to hardest
-    # if category is provided in said category
-    # requires userconfig.json to specify which medals have already been earned
-    # unlocking of maps has do be done manually
+    # Plays playthroughs for maps with missing medals.
     elif argv[iArg] == 'missing':
-        pass
+        iAdditional = iArg + 1
+        category_restriction = None
+        if len(argv) > iAdditional and argv[iAdditional] in mapsByCategory:
+            category_restriction = argv[iAdditional]
+            parsedArguments.append(argv[iAdditional])
+            iAdditional += 1
+
+        customPrint(f"Mode: missing maps{' in ' + category_restriction if category_restriction else ''}!")
+
+        user_medals = userConfig.get("medals", {})
+        missing_playthroughs_list = []
+
+        # Determine maps to check based on category restriction
+        if category_restriction:
+            maps_to_check = mapsByCategory.get(category_restriction, [])
+        else:
+            maps_to_check = list(user_medals.keys())
+
+        for map_name in maps_to_check:
+            map_medal_statuses = user_medals.get(map_name, {})
+            map_available_playthroughs = allAvailablePlaythroughs.get(map_name, {})
+
+            for gamemode, has_medal in map_medal_statuses.items():
+                if 'Only' in gamemode:
+                    continue
+
+                if not has_medal:  # Medal is missing (value is False)
+                    if gamemode in map_available_playthroughs and map_available_playthroughs[gamemode]:
+                        missing_playthroughs_list.extend(map_available_playthroughs[gamemode])
+
+        if not missing_playthroughs_list:
+            customPrint("No playthroughs found for missing medals. Exiting.")
+            return
+
+        # Set up for MANAGE_OBJECTIVES state
+        allAvailablePlaythroughsList = missing_playthroughs_list
+        originalObjectives.append({'type': State.MANAGE_OBJECTIVES})
+        mode = Mode.MISSING_MAPS # Use a mode known to handle the list correctly
+        usesAllAvailablePlaythroughsList = True
+
     # py replay.py xp [int n=1]
     # plays one of the n most efficient(in terms of xp/hour) playthroughs
     # with -r: plays indefinitely
@@ -707,7 +742,7 @@ def main():
             elif repeatObjectives or gamesPlayed == 0:
                 if mode == Mode.SINGLE_MAP:
                     objectives = copy.deepcopy(originalObjectives)
-                elif mode == Mode.RANDOM_MAP or mode == Mode.XP_FARMING or mode == Mode.MM_FARMING:
+                elif mode == Mode.RANDOM_MAP or mode == Mode.XP_FARMING or mode == Mode.MM_FARMING or mode == Mode.MISSING_MAPS:
                     objectives = []
                     playthrough = random.choice(allAvailablePlaythroughsList)
                     customPrint('random playthrough chosen: ' + playthrough['fileConfig']['map'] + ' on ' + playthrough['gamemode'] + ' (' + playthrough['filename'] + ')')
@@ -1200,3 +1235,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
