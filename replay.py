@@ -181,7 +181,6 @@ def main():
 
     parsedArguments = []
 
-
     # Additional flags:
     # -ns: disable stats logging
     if len(np.where(argv == '-ns')[0]):
@@ -219,7 +218,6 @@ def main():
     if len(np.where(argv == '-nv')[0]):
         parsedArguments.append('-nv')
         handlePlaythroughValidation = ValidatedPlaythroughs.INCLUDE_ALL
-
 
     iArg = 1
     if len(argv) <= iArg:
@@ -378,7 +376,11 @@ def main():
     elif argv[iArg] == 'achievements':
         pass
     # py replay.py missing [category]
-    # Plays playthroughs for maps with missing medals.
+    # plays random playthrough with missing medal
+    # if category is not provided, iterates from easiest category to hardest
+    # requires userconfig.json to specify which medals have already been earned
+    # unlocking of maps has do be done manually
+    # with -r: plays until there are no more missing medals
     elif argv[iArg] == 'missing':
         iAdditional = iArg + 1
         category_restriction = None
@@ -392,34 +394,29 @@ def main():
         user_medals = userConfig.get("medals", {})
         missing_playthroughs_list = []
 
-        # Determine maps to check based on category restriction
         if category_restriction:
             maps_to_check = mapsByCategory.get(category_restriction, [])
         else:
-            maps_to_check = list(user_medals.keys())
+            maps_to_check = [map_name for category_name in mapsByCategory.keys()
+                            for map_name in mapsByCategory.get(category_name, [])
+                            if map_name in user_medals]
 
         for map_name in maps_to_check:
             map_medal_statuses = user_medals.get(map_name, {})
             map_available_playthroughs = allAvailablePlaythroughs.get(map_name, {})
-
             for gamemode, has_medal in map_medal_statuses.items():
-                if 'Only' in gamemode:
-                    continue
-
-                if not has_medal:  # Medal is missing (value is False)
+                if not has_medal:
                     if gamemode in map_available_playthroughs and map_available_playthroughs[gamemode]:
                         missing_playthroughs_list.extend(map_available_playthroughs[gamemode])
 
         if not missing_playthroughs_list:
-            customPrint("No playthroughs found for missing medals. Exiting.")
+            customPrint("no playthroughs with missing medals found! exiting!")
             return
 
-        # Set up for MANAGE_OBJECTIVES state
         allAvailablePlaythroughsList = missing_playthroughs_list
         originalObjectives.append({'type': State.MANAGE_OBJECTIVES})
-        mode = Mode.MISSING_MAPS # Use a mode known to handle the list correctly
+        mode = Mode.MISSING_MAPS
         usesAllAvailablePlaythroughsList = True
-
     # py replay.py xp [int n=1]
     # plays one of the n most efficient(in terms of xp/hour) playthroughs
     # with -r: plays indefinitely
@@ -1077,7 +1074,6 @@ def main():
                 except ValueError:
                     currentValues['money'] = -1
                     currentValues['round'] = -1
-
                 
                 # to prevent random explosion particles that were recognized as digits from messing up the game
                 # still possible: if it habens 2 times in a row
@@ -1235,4 +1231,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
