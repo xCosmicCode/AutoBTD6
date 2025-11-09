@@ -124,13 +124,15 @@ e. g. `so spiiicey ninja kiwi` - `beat spice islands on alternate bloons rounds 
 
 ## `missing` - Play playthroughs that grant missing medals
 
-Uses `userconfig.json` to find maps/gamemodes where the medal status is `false`.
+Usage: `py replay.py missing [category] <flags>`
 
-It then attempts to run available playthrough files from the `playthroughs` folder that are compatible with those missing medals.
+Plays available playthroughs for maps/gamemodes where the medal status in `userconfig.json` is `false`.
+
+It iterates through maps, finds missing medals, and attempts to run compatible playthrough files from the `playthroughs` folder.
 
 If no category is specified, it processes maps in order from easiest (beginner) to hardest (expert) category.
 
-Requires the corresponding maps and gamemodes to be unlocked in the game.
+Requires the corresponding maps to be enabled within `userconfig.json`.
 
 ## `xp` - Play the most efficient maps for player xp farming
 
@@ -2211,4 +2213,5 @@ If the GUI of BTD6 changes majorly you might need to recreate the screenshots in
 
 - abilities can't be used as they require timing
 - the price calculation currently doesn't fully factor in monkey knowledge. (currently only `hero favors` for reduced hero cost)
+
 
