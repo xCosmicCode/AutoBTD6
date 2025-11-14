@@ -404,13 +404,14 @@ def main():
         for map_name in maps_to_check:
             map_medal_statuses = user_medals.get(map_name, {})
             map_available_playthroughs = allAvailablePlaythroughs.get(map_name, {})
+
             for gamemode, has_medal in map_medal_statuses.items():
-                if not has_medal:
+                if not has_medal: # Medal is missing (value is False)
                     if gamemode in map_available_playthroughs and map_available_playthroughs[gamemode]:
                         missing_playthroughs_list.extend(map_available_playthroughs[gamemode])
 
         if not missing_playthroughs_list:
-            customPrint("no playthroughs with missing medals found! exiting!")
+            customPrint("no playthroughs found for missing medals! exiting!")
             return
 
         allAvailablePlaythroughsList = missing_playthroughs_list
@@ -741,7 +742,12 @@ def main():
                     objectives = copy.deepcopy(originalObjectives)
                 elif mode == Mode.RANDOM_MAP or mode == Mode.XP_FARMING or mode == Mode.MM_FARMING or mode == Mode.MISSING_MAPS:
                     objectives = []
-                    playthrough = random.choice(allAvailablePlaythroughsList)
+                    if mode == Mode.MISSING_MAPS:
+                        for i in range(10):
+                            customPrint(allAvailablePlaythroughsList[i])
+                        playthrough = allAvailablePlaythroughsList.pop(0)
+                    else:
+                        playthrough = random.choice(allAvailablePlaythroughsList)
                     customPrint('random playthrough chosen: ' + playthrough['fileConfig']['map'] + ' on ' + playthrough['gamemode'] + ' (' + playthrough['filename'] + ')')
                     mapConfig = parseBTD6InstructionsFile(playthrough['filename'], gamemode=playthrough['gamemode'])
                     

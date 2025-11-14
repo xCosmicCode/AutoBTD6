@@ -1,0 +1,37 @@
+place obyn_greenfoot hero0 at 748, 245
+place ninja ninja0 at 830, 226
+place druid druid0 at 858, 339
+upgrade druid0 path 1
+upgrade druid0 path 1
+upgrade druid0 path 1
+upgrade druid0 path 0
+upgrade druid0 path 0
+upgrade ninja0 path 0
+upgrade ninja0 path 0
+upgrade ninja0 path 2
+upgrade ninja0 path 2
+place ninja ninja1 at 622, 300
+upgrade ninja1 path 2
+upgrade ninja1 path 2
+upgrade ninja1 path 0
+upgrade ninja1 path 0
+upgrade ninja0 path 2
+upgrade ninja0 path 2
+upgrade ninja1 path 0
+upgrade ninja1 path 0
+upgrade druid0 path 1
+place druid druid1 at 726, 171
+upgrade druid1 path 1
+upgrade druid1 path 1
+upgrade druid1 path 1
+upgrade druid1 path 0
+upgrade druid1 path 0
+upgrade druid1 path 1
+upgrade druid0 path 1
+place alchemist alchemist0 at 805, 160
+upgrade alchemist0 path 0
+upgrade alchemist0 path 0
+upgrade alchemist0 path 0
+upgrade alchemist0 path 0
+upgrade alchemist0 path 1
+upgrade alchemist0 path 1

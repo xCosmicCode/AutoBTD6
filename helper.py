@@ -953,19 +953,47 @@ def checkBTD6InstructionsFileCompatability(filename, gamemode):
     return gamemode in listBTD6InstructionsFileCompatability(filename)
 
 
-# doesn't yet consider unlocked_monkey_upgrades
+# Doesn't yet consider unlocked_monkey_upgrades
 def canUserUsePlaythrough(playthrough):
+    map_name = playthrough["fileConfig"]["map"]
+    gamemode = playthrough["fileConfig"]["gamemode"]
+
     if (
-        not playthrough["fileConfig"]["map"] in userConfig["unlocked_maps"]
-        or not userConfig["unlocked_maps"][playthrough["fileConfig"]["map"]]
+        "unlocked_maps" in userConfig
+        and map_name in userConfig["unlocked_maps"]
+        and userConfig["unlocked_maps"][map_name] == False
     ):
         return False
-    mapConfig = parseBTD6InstructionsFile(playthrough["filename"])
-    if "hero" in mapConfig and (
-        not mapConfig["hero"] in userConfig["heros"]
-        or not userConfig["heros"][mapConfig["hero"]]
+
+    if (
+        "unlocked_difficulties" in userConfig
+        and not userConfig["unlocked_difficulties"][playthrough["fileConfig"]["gamemode"]]
     ):
         return False
+
+    if "unlocked_towers" in userConfig:
+        pass
+
+    prereq_map = {
+        'primary_only': 'easy',
+        'deflation': 'primary_only',
+        'military_only': 'medium',
+        'reverse': 'medium',
+        'apopalypse': 'military_only',
+        'magic_monkeys_only': 'hard',
+        'double_hp_moabs': 'magic_monkeys_only',
+        'half_cash': 'double_hp_moabs',
+        'alternate_bloons_rounds': 'hard',
+        'impoppable': 'alternate_bloons_rounds',
+        'chimps': 'impoppable',
+    }
+
+    if gamemode in prereq_map:
+        prereq_gamemode = prereq_map[gamemode]
+        prereq_earned = userConfig.get("medals", {}).get(map_name, {}).get(prereq_gamemode, False)
+        if not prereq_earned:
+            return False
+
     return True
 
 
@@ -1035,32 +1063,70 @@ def getAllAvailablePlaythroughs(additionalDirs=[], considerUserConfig=False):
     files = []
     for dir in ["playthroughs", *additionalDirs]:
         if exists(dir):
-            files = [*files, *[dir + "/" + x for x in os.listdir(dir)]]
+            files = [*files, *[f"{dir}/{x}" for x in os.listdir(dir) if x.endswith('.btd6')]]
 
     for filename in files:
-        fileConfig = parseBTD6InstructionFileName(filename)
-        if considerUserConfig and not canUserUsePlaythrough(
-            {"filename": filename, "fileConfig": fileConfig}
-        ):
-            continue
-        if not fileConfig["map"] in playthroughs:
-            playthroughs[fileConfig["map"]] = {}
-        compatibleGamemodes = listBTD6InstructionsFileCompatability(filename)
-        for gamemode in compatibleGamemodes:
-            if considerUserConfig and not canUserAccessGamemode(
-                fileConfig["map"], gamemode
-            ):
+        try:
+            fileConfig = parseBTD6InstructionFileName(filename)
+            if fileConfig is None:
                 continue
-            if not gamemode in playthroughs[fileConfig["map"]]:
-                playthroughs[fileConfig["map"]][gamemode] = []
-            playthroughs[fileConfig["map"]][gamemode].append(
-                {
-                    "filename": filename,
-                    "fileConfig": fileConfig,
-                    "gamemode": gamemode,
-                    "isOriginalGamemode": gamemode == fileConfig["gamemode"],
-                }
-            )
+            map_name = fileConfig.get("map")
+            original_gamemode = fileConfig.get("gamemode")
+
+            if not map_name or not original_gamemode:
+                continue
+
+            if not map_name in playthroughs:
+                playthroughs[map_name] = {}
+
+            try:
+                compatibleGamemodes = listBTD6InstructionsFileCompatability(filename)
+            except Exception:
+                continue
+
+            if not compatibleGamemodes:
+                pass
+
+            for gamemode in compatibleGamemodes:
+                prereq_met = True
+
+                if gamemode == 'primary_only':
+                    prereq_met = userConfig.get("medals", {}).get(map_name, {}).get('easy', False)
+                elif gamemode == 'deflation':
+                    prereq_met = userConfig.get("medals", {}).get(map_name, {}).get('primary_only', False)
+                elif gamemode == 'military_only':
+                    prereq_met = userConfig.get("medals", {}).get(map_name, {}).get('medium', False)
+                elif gamemode == 'reverse':
+                    prereq_met = userConfig.get("medals", {}).get(map_name, {}).get('medium', False)
+                elif gamemode == 'apopalypse':
+                    prereq_met = userConfig.get("medals", {}).get(map_name, {}).get('military_only', False)
+                elif gamemode == 'magic_monkeys_only':
+                    prereq_met = userConfig.get("medals", {}).get(map_name, {}).get('hard', False)
+                elif gamemode == 'double_hp_moabs':
+                    prereq_met = userConfig.get("medals", {}).get(map_name, {}).get('magic_monkeys_only', False)
+                elif gamemode == 'half_cash':
+                    prereq_met = userConfig.get("medals", {}).get(map_name, {}).get('double_hp_moabs', False)
+                elif gamemode == 'alternate_bloons_rounds':
+                    prereq_met = userConfig.get("medals", {}).get(map_name, {}).get('hard', False)
+                elif gamemode == 'impoppable':
+                    prereq_met = userConfig.get("medals", {}).get(map_name, {}).get('alternate_bloons_rounds', False)
+                elif gamemode == 'chimps':
+                    prereq_met = userConfig.get("medals", {}).get(map_name, {}).get('impoppable', False)
+
+                if prereq_met:
+                    if not gamemode in playthroughs[map_name]:
+                        playthroughs[map_name][gamemode] = []
+                    playthroughs[map_name][gamemode].append(
+                        {
+                            "filename": filename,
+                            "fileConfig": fileConfig,
+                            "gamemode": gamemode,
+                            "isOriginalGamemode": gamemode == original_gamemode,
+                        }
+                    )
+
+        except Exception:
+            continue
 
     return playthroughs
 
@@ -1075,6 +1141,7 @@ def filterAllAvailablePlaythroughs(
     requiredFlags=None,
     onlyOriginalGamemodes=False,
     resolution=getResolutionString(),
+    requiredMedalStatus=None,
 ):
     filteredPlaythroughs = {}
 
@@ -1082,6 +1149,11 @@ def filterAllAvailablePlaythroughs(
         if categoryRestriction and maps[mapname]["category"] != categoryRestriction:
             continue
         for gamemode in playthroughs[mapname]:
+            if requiredMedalStatus is not None:
+                current_status = userConfig.get("medals", {}).get(mapname, {}).get(gamemode, None)
+                if current_status is None or current_status != requiredMedalStatus:
+                    continue
+
             if gamemodeRestriction and gamemode != gamemodeRestriction:
                 continue
             for playthrough in playthroughs[mapname][gamemode]:
@@ -1454,6 +1526,7 @@ userConfig = {
     "unlocked_maps": {},
     "unlocked_monkey_upgrades": {},
 }
+
 if exists("userconfig.json"):
     userConfig = json.load(open("userconfig.json"))
 

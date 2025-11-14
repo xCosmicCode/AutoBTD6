@@ -1246,8 +1246,23 @@
             "validation_result": true
         },
         "1920x1080": {
-            "validation_result": true
-        }
+            "validation_result": true,
+            "hard": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    835.1475939750671
+                ]
+            },
+            "medium": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    535.788667678833
+                ]
+            }
+        },
+        "version": 51.0
     },
     "playthroughs/ancient_portal#hard#2560x1440#noLLwMK.btd6": {
         "2560x1440": {
@@ -1462,8 +1477,23 @@
             "validation_result": true
         },
         "1920x1080": {
-            "validation_result": true
-        }
+            "validation_result": true,
+            "hard": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    830.4186723232269
+                ]
+            },
+            "medium": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    538.9949266910553
+                ]
+            }
+        },
+        "version": 51.0
     },
     "playthroughs/moon_landing#chimps#1920x1080.btd6": {
         "2560x1440": {
@@ -1494,8 +1524,23 @@
             "validation_result": true
         },
         "1920x1080": {
-            "validation_result": true
-        }
+            "validation_result": true,
+            "medium": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    518.6671614646912
+                ]
+            },
+            "hard": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    807.9159576892853
+                ]
+            }
+        },
+        "version": 51.0
     },
     "playthroughs/park_path#chimps#1920x1080.btd6": {
         "2560x1440": {
@@ -1534,8 +1579,23 @@
             "validation_result": true
         },
         "1920x1080": {
-            "validation_result": true
-        }
+            "validation_result": true,
+            "medium": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    597.3452813625336
+                ]
+            },
+            "hard": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    918.0132398605347
+                ]
+            }
+        },
+        "version": 51.0
     },
     "playthroughs/skates#chimps#1920x1080.btd6": {
         "2560x1440": {
@@ -1702,7 +1762,12 @@
             "validation_result": true
         },
         "1920x1080": {
-            "validation_result": true
+            "validation_result": true,
+            "chimps": {
+                "attempts": 1,
+                "wins": 0,
+                "win_times": []
+            }
         }
     },
     "playthroughs/pats_pond#chimps#1920x1080.btd6": {
@@ -1813,5 +1878,120 @@
         "1920x1080": {
             "validation_result": true
         }
+    },
+    "playthroughs/three_mines_round#chimps#1920x1080.btd6": {
+        "1920x1080": {
+            "validation_result": true,
+            "easy": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    299.5480363368988
+                ]
+            },
+            "medium": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    494.71045303344727
+                ]
+            },
+            "reverse": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    515.0087316036224
+                ]
+            },
+            "apopalypse": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    426.1212103366852
+                ]
+            },
+            "hard": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    764.1896278858185
+                ]
+            },
+            "chimps": {
+                "attempts": 2,
+                "wins": 2,
+                "win_times": [
+                    1050.6078372001648,
+                    1109.4915418624878
+                ]
+            }
+        },
+        "version": 51.0
+    },
+    "playthroughs/three_mines_round#alternate_bloons_rounds#1920x1080.btd6": {
+        "1920x1080": {
+            "validation_result": true,
+            "alternate_bloons_rounds": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    771.582444190979
+                ]
+            }
+        },
+        "version": 51.0
+    },
+    "playthroughs/three_mines_round#impoppable#1920x1080.btd6": {
+        "1920x1080": {
+            "validation_result": true,
+            "impoppable": {
+                "attempts": 3,
+                "wins": 2,
+                "win_times": [
+                    1039.6025881767273,
+                    1143.4826848506927
+                ]
+            }
+        },
+        "version": 51.0
+    },
+    "playthroughs/three_mines_round#military_only#1920x1080.btd6": {
+        "1920x1080": {
+            "validation_result": false,
+            "military_only": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    497.47444009780884
+                ]
+            }
+        },
+        "version": 51.0
+    },
+    "playthroughs/three_mines_round#magic_monkeys_only#1920x1080.btd6": {
+        "1920x1080": {
+            "validation_result": false,
+            "magic_monkeys_only": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    753.271897315979
+                ]
+            }
+        },
+        "version": 51.0
+    },
+    "playthroughs/three_mines_round#double_hp_moabs#1920x1080.btd6": {
+        "1920x1080": {
+            "validation_result": true,
+            "double_hp_moabs": {
+                "attempts": 1,
+                "wins": 1,
+                "win_times": [
+                    858.6141374111176
+                ]
+            }
+        },
+        "version": 51.0
     }
 }
